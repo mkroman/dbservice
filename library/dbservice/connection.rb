@@ -19,7 +19,9 @@ module DBService
       json = JSON.parse response.body
 
       if json['error']
-        raise JSONRPCError, json['error']['errors'].map { |error| error['message'] }.join(' & ')
+        json['error']['errors'].each do |error|
+          raise JSONRPCError, error['message']
+        end
       else
         json['result']
       end
