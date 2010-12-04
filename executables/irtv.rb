@@ -5,5 +5,5 @@ $:.unshift File.dirname(__FILE__) + '/../library'
 require 'dbservice'
 
 DBService::Client.instance.tap do |this|
-  p this.search("simpsons").body
+  p this.programs_for this.channels[0]
 end

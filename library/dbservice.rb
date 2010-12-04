@@ -5,6 +5,7 @@ require 'net/http'
 require 'singleton'
 
 require 'dbservice/client'
+require 'dbservice/channel'
 require 'dbservice/connection'
 
 module DBService
@@ -14,7 +15,6 @@ module DBService
 
 module_function
 
-  def search *args
-    Client.instance.search *args
-  end
+  def search *args; client.search *args end
+  def client; Client.instance end
 end

@@ -9,16 +9,19 @@ module DBService
     DefaultPort = 80
 
     def initialize host = DefaultHost, port = DefaultPort, path = DefaultPath
-      @host, @port, @path, @transaction_id = host, port, path, 0
+      @host, @port, @path, @id = host, port, path, 0
 
       @http = Net::HTTP.new @host, @port
     end
 
     def transmit method, params = {}
       response = @http.post DefaultPath, body_for(method, params), headers_for(method)
+      json = JSON.parse response.body
 
-      JSON.parse(response.body).tap do |json|
-        raise JSONRPCError, json['errors'] if json['errors']
+      if json['error']
+        raise JSONRPCError, json['error']['errors'].map { |error| error['message'] }.join(' & ')
+      else
+        json['result']
       end
     end
 
@@ -29,7 +32,7 @@ module DBService
     end
 
     def body_for method, params = {}
-      { id: @transaction_id += 1, method: "#{method}", params: params }.to_json
+      { id: @id += 1, method: "#{method}", params: params }.to_json
     end
   end
 end
