@@ -1,11 +1,13 @@
 # encoding: utf-8
 
+require 'date'
 require 'json'
 require 'net/http'
 require 'singleton'
 
 require 'dbservice/client'
 require 'dbservice/channel'
+require 'dbservice/program'
 require 'dbservice/connection'
 
 module DBService
@@ -15,6 +17,7 @@ module DBService
 
 module_function
 
-  def search *args; client.search *args end
-  def client; Client.instance end
+  def method_missing name, *args
+    Client.instance.__send__ name, *args
+  end
 end
